@@ -38,10 +38,10 @@
     "type": "free"
   },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema",
-  "usesSecureProxy": false,
+  "usesSecureProxy": true,
   "usesProviderHeadersName": false,
   "serviceUrl": "https://qa.online-cde.api.bold.co/ecommerce/vtex",
   "usesAntifraud": false,
   "usesAutoSettleOptions": true,
-  "requiresDocument": false
+  "requiresDocument": true
 }
