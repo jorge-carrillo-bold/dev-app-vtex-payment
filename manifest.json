@@ -1,8 +1,8 @@
 {
-  "name": "payment-provider-example",
-  "vendor": "vtex",
-  "version": "1.2.0",
-  "title": "Payment Provider Example",
+  "name": "payment-provider-bold-qa",
+  "vendor": "bold",
+  "version": "0.1.0-beta",
+  "title": "Payment Provider Bold QA",
   "description": "Reference app for Payment-Provider protocol implementers",
   "builders": {
     "paymentProvider": "1.x",
@@ -25,10 +25,23 @@
         "host": "heimdall.vtexpayments.com.br",
         "path": "/api/payment-provider/callback/*"
       }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "qa.online-cde.api.bold.co",
+        "path": "*"
+      }
     }
   ],
   "billingOptions": {
     "type": "free"
   },
-  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema",
+  "usesSecureProxy": false,
+  "usesProviderHeadersName": false,
+  "serviceUrl": "https://qa.online-cde.api.bold.co/ecommerce/vtex",
+  "usesAntifraud": false,
+  "usesAutoSettleOptions": true,
+  "requiresDocument": false
 }
