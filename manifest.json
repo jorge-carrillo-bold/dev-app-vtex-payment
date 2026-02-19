@@ -1,6 +1,6 @@
 {
   "name": "payment-provider-bold-qa",
-  "vendor": "bold",
+  "vendor": "boldcolombia",
   "version": "1.0.0-beta.0",
   "title": "Payment Provider Bold QA",
   "description": "Reference app for Payment-Provider protocol implementers",
