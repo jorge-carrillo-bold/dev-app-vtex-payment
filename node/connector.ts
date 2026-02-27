@@ -14,7 +14,7 @@ import {
 } from '@vtex/payment-provider'
 import { VBase } from '@vtex/api'
 
-import { randomString } from './utils'
+import { randomString, randomUrl } from './utils'
 import { executeAuthorization } from './flow'
 
 const authorizationsBucket = 'authorizations'
@@ -55,16 +55,34 @@ export default class TestSuiteApprover extends PaymentProvider {
         authorization
       )
 
-      if (persistedResponse !== undefined && persistedResponse !== null) {
-        return persistedResponse
-      }
+      if (persistedResponse) return persistedResponse
 
       return executeAuthorization(authorization, response =>
         this.saveAndRetry(authorization, response)
       )
     }
 
-    throw new Error('Not implemented')
+    // FLUJO PENDING PARA PROBAR APP DATA
+    // Respondemos con status 'undefined' según la interfaz de VTEX
+    return {
+      paymentId: authorization.paymentId,
+      status: 'undefined', // Indica que el pago está pendiente/en proceso
+      tid: authorization.transactionId,
+      authorizationId: randomString(), // ID interno de tu sistema
+      delayToCancel: 3600, // Tiempo en segundos antes de que VTEX cancele automáticamente
+
+      // Probar paymentAppData (Esto es lo que recibirá tu App de pago en el frontend)
+      paymentAppData: {
+        appName: 'bold-vtex-payment-app-3ds', // El nombre de tu app de pago definida en el manifest
+        payload: JSON.stringify({
+          paymentUrl: randomUrl(),
+        }),
+      },
+      paymentUrl: null, // O una URL de respaldo si la app falla
+      acquirer: 'Bold',
+      code: '201', // Código de creación exitosa
+      message: 'Awaiting payment app interaction',
+    }
   }
 
   public async cancel(
