@@ -5,7 +5,9 @@
   "title": "Payment Provider Bold QA",
   "description": "Reference app for Payment-Provider protocol implementers",
   "builders": {
-    "paymentProvider": "1.x"
+    "paymentProvider": "1.x",
+    "node": "6.x",
+    "docs": "0.x"
   },
   "policies": [
     {
