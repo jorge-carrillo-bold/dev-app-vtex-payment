@@ -1,6 +1,5 @@
 {
   "name": "BoldQA",
-  "serviceUrl": "https://qa.online-cde.api.bold.co/ecommerce/vtex",
   "paymentMethods": [
     {
       "name": "Visa",
@@ -12,7 +11,5 @@
       "name": "account_name",
       "type": "text"
     }
-  ],
-  "usesSecureProxy": true,
-  "usesProviderHeadersName": true
+  ]
 }
