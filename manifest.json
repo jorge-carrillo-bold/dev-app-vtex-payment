@@ -20,13 +20,6 @@
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "heimdall.vtexpayments.com.br",
-        "path": "/api/payment-provider/callback/*"
-      }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
         "host": "qa.online-cde.api.bold.co",
         "path": "*"
       }
