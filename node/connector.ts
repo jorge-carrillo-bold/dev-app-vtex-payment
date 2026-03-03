@@ -18,6 +18,7 @@ import { VBase } from '@vtex/api'
 
 import { randomString } from './utils'
 import { executeAuthorization } from './flow'
+import { CustomClients } from './clients'
 
 const authorizationsBucket = 'authorizations'
 const persistAuthorizationResponse = async (
@@ -66,29 +67,16 @@ export default class TestSuiteApprover extends PaymentProvider {
       )
     }
 
-    let accountName: string | undefined
-    const { merchantSettings } = authorization
-
-    merchantSettings?.forEach(setting => {
-      if (setting.name === 'account_name') {
-        accountName = setting.value
-      }
-    })
-
     if (isCardAuthorization(authorization)) {
-      const { card } = authorization
-
-      // Use the secure client
-      const response = await this.context.clients.myPCIClient.processPayment(
-        card,
-        accountName
-      )
-
-      return Authorizations.approve(authorization, {
-        authorizationId: response.transactionId,
-        nsu: response.nsu,
-        tid: response.tid,
-      })
+      await (this.context.clients as CustomClients).myPCIClient
+        .processPayment(authorization)
+        .then(response => {
+          return Authorizations.approve(authorization, {
+            authorizationId: response?.transactionId,
+            nsu: response?.nsu,
+            tid: response?.tid,
+          })
+        })
     }
 
     throw new Error('Unsupported payment method')
