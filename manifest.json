@@ -29,6 +29,5 @@
   "billingOptions": {
     "type": "free"
   },
-  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema",
-  "serviceUrl": "https://qa.online-cde.api.bold.co/ecommerce/vtex"
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
