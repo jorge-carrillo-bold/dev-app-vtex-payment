@@ -4,7 +4,7 @@
   "paymentMethods": [
     {
       "name": "Visa",
-      "allowsSplit": "onCapture"
+      "allowsSplit": "disabled"
     }
   ],
   "customFields": [
