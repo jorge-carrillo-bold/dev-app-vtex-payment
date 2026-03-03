@@ -1,4 +1,5 @@
 import {
+  Authorizations,
   AuthorizationRequest,
   AuthorizationResponse,
   CancellationRequest,
@@ -11,6 +12,7 @@ import {
   SettlementRequest,
   SettlementResponse,
   Settlements,
+  isCardAuthorization,
 } from '@vtex/payment-provider'
 import { VBase } from '@vtex/api'
 
@@ -64,7 +66,32 @@ export default class TestSuiteApprover extends PaymentProvider {
       )
     }
 
-    throw new Error('Not implemented')
+    let accountName: string | undefined
+    const { merchantSettings } = authorization
+
+    merchantSettings?.forEach(setting => {
+      if (setting.name === 'account_name') {
+        accountName = setting.value
+      }
+    })
+
+    if (isCardAuthorization(authorization)) {
+      const { card } = authorization
+
+      // Use the secure client
+      const response = await this.context.clients.myPCIClient.processPayment(
+        card,
+        accountName
+      )
+
+      return Authorizations.approve(authorization, {
+        authorizationId: response.transactionId,
+        nsu: response.nsu,
+        tid: response.tid,
+      })
+    }
+
+    throw new Error('Unsupported payment method')
   }
 
   public async cancel(
