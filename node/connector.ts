@@ -81,16 +81,18 @@ export default class TestSuiteApprover extends PaymentProvider {
     }
 
     const { appToken, appKey } = this.getCredentials()
+    const boldClient = this.getBoldClient()
 
     let cardAuthorization: AuthorizationRequest | any = authorization
 
-    // Call direct fake payment cards (Visa, Mastercard, etc.)
+    // Métodos de pago con tarjeta que pasan por Secure Proxy
     const cardMethods = ['Visa', 'Mastercard', 'American Express', 'Diners']
 
-    if (
+    const isCard =
       isCardAuthorization(authorization) &&
       cardMethods.includes(authorization.paymentMethod.toString())
-    ) {
+
+    if (isCard) {
       cardAuthorization = {
         ...authorization,
         value:
@@ -108,8 +110,23 @@ export default class TestSuiteApprover extends PaymentProvider {
           },
         },
       }
+
+      // Usar Secure Proxy: el Gateway reemplaza tokens por datos reales
+      const { secureProxyUrl } = authorization
+
+      if (secureProxyUrl) {
+        const boldResponse = await boldClient.createPaymentViaSecureProxy(
+          secureProxyUrl,
+          cardAuthorization,
+          appToken,
+          appKey
+        )
+
+        return (boldResponse as unknown) as AuthorizationResponse
+      }
     }
 
+    // Métodos de pago alternativos (sin tarjeta) - llamada directa vía proxy VTEX IO
     if (authorization.miniCart.buyer.lastName === 'bancolombia') {
       cardAuthorization = {
         ...authorization,
@@ -141,7 +158,7 @@ export default class TestSuiteApprover extends PaymentProvider {
       }
     }
 
-    const boldResponse = await this.getBoldClient().createPayment(
+    const boldResponse = await boldClient.createPayment(
       cardAuthorization,
       appToken,
       appKey

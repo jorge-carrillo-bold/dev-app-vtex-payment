@@ -25,6 +25,13 @@
         "host": "qa.online-cde.api.bold.co",
         "path": "*"
       }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{account}}.vtexpayments.com.br",
+        "path": "*"
+      }
     }
   ],
   "billingOptions": {

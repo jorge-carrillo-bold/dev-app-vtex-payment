@@ -4,6 +4,7 @@ import { AuthorizationRequest } from '@vtex/payment-provider'
 const BOLD_BASE_URL = 'https://qa.online-cde.api.bold.co'
 const BOLD_PROXY_TO = `${BOLD_BASE_URL}:443`
 const BASE_PATH = '/ecommerce/vtex'
+const BOLD_PAYMENTS_ENDPOINT = `${BOLD_BASE_URL}${BASE_PATH}/payments`
 
 export default class BoldClient extends ExternalClient {
   constructor(ctx: IOContext, options?: InstanceOptions) {
@@ -16,7 +17,7 @@ export default class BoldClient extends ExternalClient {
         'x-vtex-use-https': 'true',
         'x-vtex-proxy-to': BOLD_PROXY_TO,
       },
-      timeout: 8000,
+      timeout: 15000,
       retries: 1,
     })
   }
@@ -30,6 +31,32 @@ export default class BoldClient extends ExternalClient {
     }
   }
 
+  /**
+   * Llama al secureProxyUrl de VTEX Gateway para que este reemplace
+   * los tokens de tarjeta por datos reales y reenvíe la solicitud a Bold.
+   */
+  public async createPaymentViaSecureProxy(
+    secureProxyUrl: string,
+    body: any,
+    appToken: string,
+    appKey: string
+  ): Promise<any> {
+    return this.http.post(secureProxyUrl, body, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-PROVIDER-Forward-To': BOLD_PAYMENTS_ENDPOINT,
+        'X-PROVIDER-Forward-appKey': appKey,
+        'X-PROVIDER-Forward-appToken': appToken,
+      },
+      metric: 'bold-create-payment-secure-proxy',
+    })
+  }
+
+  /**
+   * Para métodos de pago que NO usan tarjeta (PSE, Nequi, Bancolombia, QR),
+   * se llama directamente a Bold a través del proxy de VTEX IO.
+   */
   public async createPayment(
     body: AuthorizationRequest | any,
     appToken: string,
