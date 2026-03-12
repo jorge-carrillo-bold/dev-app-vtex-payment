@@ -112,7 +112,9 @@ export default class TestSuiteApprover extends PaymentProvider {
       }
 
       // Usar Secure Proxy: el Gateway reemplaza tokens por datos reales
-      const { secureProxyUrl } = authorization
+      const secureProxyUrl = isCardAuthorization(authorization)
+        ? authorization.secureProxyUrl
+        : null
 
       if (secureProxyUrl) {
         const boldResponse = await boldClient.createPaymentViaSecureProxy(
