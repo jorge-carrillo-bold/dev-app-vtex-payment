@@ -12,6 +12,7 @@ export default class BoldClient extends ExternalClient {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
+      timeout: 10000,
     })
   }
 
@@ -26,6 +27,7 @@ export default class BoldClient extends ExternalClient {
         'x-vtex-api-appToken': appToken,
         'x-vtex-api-is-testsuite': 'false',
       },
+      timeout: 10000,
     })
   }
 }
