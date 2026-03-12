@@ -1,13 +1,13 @@
 {
   "memory": 256,
-  "timeout": 10,
+  "timeout": 15,
   "minReplicas": 2,
   "maxReplicas": 4,
   "routes": {
     "payment-provider": {
       "path": "/_v/boldcolombia.payment-provider-bold-qa/v2",
       "public": true,
-      "timeout": 10
+      "timeout": 15
     }
   }
 }

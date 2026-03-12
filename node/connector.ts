@@ -17,6 +17,7 @@ import { VBase } from '@vtex/api'
 
 import { randomString } from './utils'
 import { executeAuthorization } from './flow'
+import { Clients } from './clients'
 
 const authorizationsBucket = 'authorizations'
 const persistAuthorizationResponse = async (
@@ -47,6 +48,20 @@ export default class TestSuiteApprover extends PaymentProvider {
     this.callback(req, resp)
   }
 
+  private getBoldClient() {
+    return ((this.context.clients as unknown) as Clients).bold
+  }
+
+  private getCredentials() {
+    const appToken =
+      (this.context.request.headers['x-vtex-api-apptoken'] as string) ?? ''
+
+    const appKey =
+      (this.context.request.headers['x-vtex-api-appkey'] as string) ?? ''
+
+    return { appToken, appKey }
+  }
+
   public async authorize(
     authorization: AuthorizationRequest
   ): Promise<AuthorizationResponse> {
@@ -65,11 +80,7 @@ export default class TestSuiteApprover extends PaymentProvider {
       )
     }
 
-    const appToken =
-      (this.context.request.headers['x-vtex-api-apptoken'] as string) ?? ''
-
-    const appKey =
-      (this.context.request.headers['x-vtex-api-appkey'] as string) ?? ''
+    const { appToken, appKey } = this.getCredentials()
 
     let cardAuthorization: AuthorizationRequest | any = authorization
 
@@ -130,14 +141,13 @@ export default class TestSuiteApprover extends PaymentProvider {
       }
     }
 
-    const boldClient = (this.context.clients as any).bold
-    const boldResponse = await boldClient.createPayment(
+    const boldResponse = await this.getBoldClient().createPayment(
       cardAuthorization,
       appToken,
       appKey
     )
 
-    return boldResponse as AuthorizationResponse
+    return (boldResponse as unknown) as AuthorizationResponse
   }
 
   public async cancel(
@@ -149,7 +159,15 @@ export default class TestSuiteApprover extends PaymentProvider {
       })
     }
 
-    throw new Error('Not implemented')
+    const { appToken, appKey } = this.getCredentials()
+    const boldResponse = await this.getBoldClient().cancelPayment(
+      cancellation.paymentId,
+      cancellation,
+      appToken,
+      appKey
+    )
+
+    return (boldResponse as unknown) as CancellationResponse
   }
 
   public async refund(refund: RefundRequest): Promise<RefundResponse> {
@@ -157,7 +175,15 @@ export default class TestSuiteApprover extends PaymentProvider {
       return Refunds.deny(refund)
     }
 
-    throw new Error('Not implemented')
+    const { appToken, appKey } = this.getCredentials()
+    const boldResponse = await this.getBoldClient().refundPayment(
+      refund.paymentId,
+      refund,
+      appToken,
+      appKey
+    )
+
+    return (boldResponse as unknown) as RefundResponse
   }
 
   public async settle(
@@ -167,7 +193,15 @@ export default class TestSuiteApprover extends PaymentProvider {
       return Settlements.deny(settlement)
     }
 
-    throw new Error('Not implemented')
+    const { appToken, appKey } = this.getCredentials()
+    const boldResponse = await this.getBoldClient().settlePayment(
+      settlement.paymentId,
+      settlement,
+      appToken,
+      appKey
+    )
+
+    return (boldResponse as unknown) as SettlementResponse
   }
 
   public inbound: undefined

@@ -1,6 +1,6 @@
 import { IOClients } from '@vtex/api'
 
-import BoldClient from './boldClient'
+import BoldClient from './bold'
 
 export class Clients extends IOClients {
   public get bold() {
