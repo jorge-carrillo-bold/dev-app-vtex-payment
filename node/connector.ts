@@ -4,6 +4,7 @@ import {
   CancellationRequest,
   CancellationResponse,
   Cancellations,
+  isCardAuthorization,
   PaymentProvider,
   RefundRequest,
   RefundResponse,
@@ -64,35 +65,31 @@ export default class TestSuiteApprover extends PaymentProvider {
       )
     }
 
-    // Call direct fake payment "Botón Bancolombia"
-    if (authorization.paymentMethod.toString() === 'Botón Bancolombia') {
-      const appToken =
-        (this.context.request.headers['x-vtex-api-apptoken'] as string) ?? ''
+    const appToken =
+      (this.context.request.headers['x-vtex-api-apptoken'] as string) ?? ''
 
-      const boldClient = (this.context.clients as any).bold
-      const boldResponse = await boldClient.createPayment(
-        authorization,
-        appToken
-      )
+    const appKey =
+      (this.context.request.headers['x-vtex-api-appkey'] as string) ?? ''
 
-      return boldResponse as AuthorizationResponse
-    }
+    let cardAuthorization: AuthorizationRequest | any = authorization
 
     // Call direct fake payment cards (Visa, Mastercard, etc.)
     const cardMethods = ['Visa', 'Mastercard', 'American Express', 'Diners']
 
-    if (cardMethods.includes(authorization.paymentMethod.toString())) {
-      const appToken =
-        (this.context.request.headers['x-vtex-api-apptoken'] as string) ?? ''
-
-      const appKey =
-        (this.context.request.headers['x-vtex-api-appkey'] as string) ?? ''
-
-      const cardAuthorization = {
+    if (
+      isCardAuthorization(authorization) &&
+      cardMethods.includes(authorization.paymentMethod.toString())
+    ) {
+      cardAuthorization = {
         ...authorization,
+        value:
+          authorization.miniCart.buyer.lastName === '3ds'
+            ? 555020
+            : authorization.value,
         card: {
           holder: 'demo nombre larog',
           number: '411111111111111',
+          document: '12345678900',
           csc: '123',
           expiration: {
             month: '12',
@@ -100,18 +97,47 @@ export default class TestSuiteApprover extends PaymentProvider {
           },
         },
       }
-
-      const boldClient = (this.context.clients as any).bold
-      const boldResponse = await boldClient.createPayment(
-        cardAuthorization,
-        appToken,
-        appKey
-      )
-
-      return boldResponse as AuthorizationResponse
     }
 
-    throw new Error('Not implemented')
+    if (authorization.miniCart.buyer.lastName === 'bancolombia') {
+      cardAuthorization = {
+        ...authorization,
+        paymentMethod: 'Botón Bancolombia' as AuthorizationRequest['paymentMethod'],
+      }
+    }
+
+    if (authorization.miniCart.buyer.lastName === 'nequi') {
+      cardAuthorization = {
+        ...authorization,
+        paymentMethod: 'Nequi' as AuthorizationRequest['paymentMethod'],
+      }
+    }
+
+    if (authorization.miniCart.buyer.lastName === 'qr') {
+      cardAuthorization = {
+        ...authorization,
+        paymentMethod: 'QR' as AuthorizationRequest['paymentMethod'],
+      }
+    }
+
+    if (authorization.miniCart.buyer.lastName === 'pse') {
+      cardAuthorization = {
+        ...authorization,
+        paymentMethod: 'PSE' as AuthorizationRequest['paymentMethod'],
+        metadata: {
+          bankCode: '1811',
+        },
+      }
+    }
+
+    const boldClient = (this.context.clients as any).bold
+    const boldResponse = await boldClient.createPayment(
+      cardAuthorization,
+      appToken,
+      appKey
+    )
+
+    return boldResponse as AuthorizationResponse
   }
 
   public async cancel(

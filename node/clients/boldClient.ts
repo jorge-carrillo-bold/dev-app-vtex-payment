@@ -18,7 +18,7 @@ export default class BoldClient extends ExternalClient {
   }
 
   public async createPayment(
-    body: AuthorizationRequest,
+    body: AuthorizationRequest | any,
     appToken: string,
     appKey: string
   ): Promise<any> {
