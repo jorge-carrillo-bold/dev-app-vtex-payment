@@ -78,6 +78,35 @@ export default class TestSuiteApprover extends PaymentProvider {
       return boldResponse as AuthorizationResponse
     }
 
+    // Call direct fake payment cards (Visa, Mastercard, etc.)
+    const cardMethods = ['Visa', 'Mastercard', 'American Express', 'Diners']
+
+    if (cardMethods.includes(authorization.paymentMethod.toString())) {
+      const appToken =
+        (this.context.request.headers['x-vtex-api-apptoken'] as string) ?? ''
+
+      const cardAuthorization = {
+        ...authorization,
+        card: {
+          holder: 'demo nombre larog',
+          number: '411111111111111',
+          csc: '123',
+          expiration: {
+            month: '12',
+            year: '2030',
+          },
+        },
+      }
+
+      const boldClient = (this.context.clients as any).bold
+      const boldResponse = await boldClient.createPayment(
+        cardAuthorization,
+        appToken
+      )
+
+      return boldResponse as AuthorizationResponse
+    }
+
     throw new Error('Not implemented')
   }
 
