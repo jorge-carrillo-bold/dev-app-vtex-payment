@@ -85,6 +85,9 @@ export default class TestSuiteApprover extends PaymentProvider {
       const appToken =
         (this.context.request.headers['x-vtex-api-apptoken'] as string) ?? ''
 
+      const appKey =
+        (this.context.request.headers['x-vtex-api-appkey'] as string) ?? ''
+
       const cardAuthorization = {
         ...authorization,
         card: {
@@ -101,7 +104,8 @@ export default class TestSuiteApprover extends PaymentProvider {
       const boldClient = (this.context.clients as any).bold
       const boldResponse = await boldClient.createPayment(
         cardAuthorization,
-        appToken
+        appToken,
+        appKey
       )
 
       return boldResponse as AuthorizationResponse

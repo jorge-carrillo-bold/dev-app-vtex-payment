@@ -1,4 +1,5 @@
 import { ExternalClient, IOContext, InstanceOptions } from '@vtex/api'
+import { AuthorizationRequest } from '@vtex/payment-provider'
 
 const BOLD_BASE_URL = 'https://qa.online-cde.api.bold.co'
 
@@ -10,14 +11,18 @@ export default class BoldClient extends ExternalClient {
         ...options?.headers,
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        'x-vtex-api-appKey': 'KeXJ3hJ1V7UuaTMGwFjFzMd679gFAaF3OEayjcd9OPA',
       },
     })
   }
 
-  public async createPayment(body: any, appToken: string): Promise<any> {
+  public async createPayment(
+    body: AuthorizationRequest,
+    appToken: string,
+    appKey: string
+  ): Promise<any> {
     return this.http.post('/ecommerce/vtex/payments', body, {
       headers: {
+        'x-vtex-api-appKey': appKey,
         'x-vtex-api-appToken': appToken,
         'x-vtex-api-is-testsuite': 'false',
       },
