@@ -1,12 +1,15 @@
-import { ExternalClient, IOContext, InstanceOptions } from '@vtex/api'
-import { AuthorizationRequest } from '@vtex/payment-provider'
+import { IOContext, InstanceOptions } from '@vtex/api'
+import {
+  AuthorizationRequest,
+  SecureExternalClient,
+} from '@vtex/payment-provider'
 
 const BOLD_BASE_URL = 'https://qa.online-cde.api.bold.co'
 const BOLD_PROXY_TO = `${BOLD_BASE_URL}:443`
 const BASE_PATH = '/ecommerce/vtex'
 const BOLD_PAYMENTS_ENDPOINT = `${BOLD_BASE_URL}${BASE_PATH}/payments`
 
-export default class BoldClient extends ExternalClient {
+export default class BoldClient extends SecureExternalClient {
   constructor(ctx: IOContext, options?: InstanceOptions) {
     super(BOLD_BASE_URL, ctx, {
       ...options,
