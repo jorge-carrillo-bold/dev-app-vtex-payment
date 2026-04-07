@@ -7,6 +7,7 @@ import {
 const BOLD_BASE_URL = 'https://qa.online-cde.api.bold.co'
 const BOLD_PROXY_TO = `${BOLD_BASE_URL}:443`
 const BASE_PATH = '/ecommerce/vtex'
+const BOLD_PAYMENTS_ENDPOINT = `${BOLD_BASE_URL}${BASE_PATH}/payments`
 
 export default class BoldClient extends SecureExternalClient {
   constructor(ctx: IOContext, options?: InstanceOptions) {
@@ -24,12 +25,13 @@ export default class BoldClient extends SecureExternalClient {
     })
   }
 
-  private proxyHeaders(appToken: string, appKey: string) {
+  private proxyHeaders(appToken: string, appKey: string, isTestSuite = false) {
     return {
       'x-vtex-api-appKey': appKey,
       'x-vtex-api-appToken': appToken,
       'x-vtex-use-https': 'true',
       'x-vtex-proxy-to': BOLD_PROXY_TO,
+      'x-vtex-api-is-testsuite': isTestSuite.toString(),
     }
   }
 
@@ -41,15 +43,17 @@ export default class BoldClient extends SecureExternalClient {
     secureProxyUrl: string,
     body: any,
     appToken: string,
-    appKey: string
+    appKey: string,
+    isTestSuite: boolean
   ): Promise<any> {
     return this.http.post(secureProxyUrl, body, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        // VTEX Secure Proxy usa este prefijo para reenviar headers al destino
-        'X-VTEX-Proxy-Forwarded-appkey': appKey,
-        'X-VTEX-Proxy-Forwarded-apptoken': appToken,
+        'X-PROVIDER-Forward-To': BOLD_PAYMENTS_ENDPOINT,
+        'X-PROVIDER-Forward-x-vtex-api-appkey': appKey,
+        'X-PROVIDER-Forward-x-vtex-api-apptoken': appToken,
+        'X-PROVIDER-Forward-x-vtex-api-is-testsuite': isTestSuite.toString(),
       },
       metric: 'bold-create-payment-secure-proxy',
     })
@@ -62,10 +66,11 @@ export default class BoldClient extends SecureExternalClient {
   public async createPayment(
     body: AuthorizationRequest | any,
     appToken: string,
-    appKey: string
+    appKey: string,
+    isTestSuite: boolean
   ): Promise<any> {
     return this.http.post(`${BASE_PATH}/payments`, body, {
-      headers: this.proxyHeaders(appToken, appKey),
+      headers: this.proxyHeaders(appToken, appKey, isTestSuite),
       metric: 'bold-create-payment',
     })
   }

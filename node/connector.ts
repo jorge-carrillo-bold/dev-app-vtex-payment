@@ -124,7 +124,8 @@ export default class TestSuiteApprover extends PaymentProvider {
           secureProxyUrl,
           cardAuthorization,
           appToken,
-          appKey
+          appKey,
+          this.isTestSuite
         )
 
         return (boldResponse as unknown) as AuthorizationResponse
@@ -166,7 +167,8 @@ export default class TestSuiteApprover extends PaymentProvider {
     const boldResponse = await boldClient.createPayment(
       cardAuthorization,
       appToken,
-      appKey
+      appKey,
+      this.isTestSuite
     )
 
     return (boldResponse as unknown) as AuthorizationResponse
