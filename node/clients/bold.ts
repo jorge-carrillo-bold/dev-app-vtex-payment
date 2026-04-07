@@ -48,9 +48,9 @@ export default class BoldClient extends SecureExternalClient {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-PROVIDER-Forward-To': BOLD_PAYMENTS_ENDPOINT,
-        'X-PROVIDER-Forward-appKey': appKey,
-        'X-PROVIDER-Forward-appToken': appToken,
+        // VTEX Secure Proxy usa este prefijo para reenviar headers al destino
+        'X-VTEX-Proxy-Forwarded-appkey': appKey,
+        'X-VTEX-Proxy-Forwarded-apptoken': appToken,
       },
       metric: 'bold-create-payment-secure-proxy',
     })
