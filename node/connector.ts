@@ -54,10 +54,10 @@ export default class TestSuiteApprover extends PaymentProvider {
 
   private getCredentials() {
     const appToken = this.context.request.headers[
-      'x-vtex-api-apptoken'
+      'x-vtex-api-appToken'
     ] as string
 
-    const appKey = this.context.request.headers['x-vtex-api-appkey'] as string
+    const appKey = this.context.request.headers['x-vtex-api-appKey'] as string
 
     return {
       appToken: appToken ?? '',

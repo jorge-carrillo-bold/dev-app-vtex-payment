@@ -1,6 +1,7 @@
 {
   "name": "BoldQA",
   "usesSecureProxy": true,
+  "usesProviderHeadersName": false,
   "paymentMethods": [
     {
       "name": "Visa",
