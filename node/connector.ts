@@ -97,9 +97,9 @@ export default class TestSuiteApprover extends PaymentProvider {
       'Bold Nequi',
     ]
 
-    const isCard =
-      isCardAuthorization(authorization) &&
-      !notcardMethods.includes(authorization.paymentMethod.toString())
+    const isCard = !notcardMethods.includes(
+      authorization.paymentMethod.toString()
+    )
 
     if (isCard) {
       cardAuthorization = {
@@ -118,23 +118,6 @@ export default class TestSuiteApprover extends PaymentProvider {
             year: '2030',
           },
         },
-      }
-
-      // Usar Secure Proxy: el Gateway reemplaza tokens por datos reales
-      const secureProxyUrl = isCardAuthorization(authorization)
-        ? authorization.secureProxyUrl
-        : null
-
-      if (secureProxyUrl) {
-        const boldResponse = await boldClient.createPaymentViaSecureProxy(
-          secureProxyUrl,
-          cardAuthorization,
-          appToken,
-          appKey,
-          this.isTestSuite
-        )
-
-        return (boldResponse as unknown) as AuthorizationResponse
       }
     }
 
@@ -168,6 +151,23 @@ export default class TestSuiteApprover extends PaymentProvider {
           bankCode: '1811',
         },
       }
+    }
+
+    // Usar Secure Proxy: el Gateway reemplaza tokens por datos reales
+    const secureProxyUrl = isCardAuthorization(authorization)
+      ? authorization.secureProxyUrl
+      : null
+
+    if (secureProxyUrl) {
+      const boldResponse = await boldClient.createPaymentViaSecureProxy(
+        secureProxyUrl,
+        cardAuthorization,
+        appToken,
+        appKey,
+        this.isTestSuite
+      )
+
+      return (boldResponse as unknown) as AuthorizationResponse
     }
 
     const boldResponse = await boldClient.createPayment(
