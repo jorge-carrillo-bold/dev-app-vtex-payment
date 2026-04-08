@@ -89,11 +89,17 @@ export default class TestSuiteApprover extends PaymentProvider {
     let cardAuthorization: AuthorizationRequest | any = authorization
 
     // Métodos de pago con tarjeta que pasan por Secure Proxy
-    const cardMethods = ['Visa', 'Mastercard', 'American Express', 'Diners']
+    const notcardMethods = [
+      'Paga en línea con Bold',
+      'PSE',
+      'Botón Bancolombia',
+      'QR Bre-B',
+      'Bold Nequi',
+    ]
 
     const isCard =
       isCardAuthorization(authorization) &&
-      cardMethods.includes(authorization.paymentMethod.toString())
+      !notcardMethods.includes(authorization.paymentMethod.toString())
 
     if (isCard) {
       cardAuthorization = {
@@ -143,14 +149,14 @@ export default class TestSuiteApprover extends PaymentProvider {
     if (authorization.miniCart.buyer.lastName === 'nequi') {
       cardAuthorization = {
         ...authorization,
-        paymentMethod: 'Nequi' as AuthorizationRequest['paymentMethod'],
+        paymentMethod: 'Bold Nequi' as AuthorizationRequest['paymentMethod'],
       }
     }
 
     if (authorization.miniCart.buyer.lastName === 'qr') {
       cardAuthorization = {
         ...authorization,
-        paymentMethod: 'QR' as AuthorizationRequest['paymentMethod'],
+        paymentMethod: 'QR Bre-B' as AuthorizationRequest['paymentMethod'],
       }
     }
 

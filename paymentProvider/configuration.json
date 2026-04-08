@@ -2,13 +2,58 @@
   "name": "BoldQA",
   "usesSecureProxy": true,
   "usesProviderHeadersName": false,
+  "requiresDocuments": true,
   "paymentMethods": [
+    {
+      "name": "Paga en línea con Bold",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "PSE",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Botón Bancolombia",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "QR Bre-B",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Bold Nequi",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Mastercard",
+      "allowsSplit": "disabled"
+    },
     {
       "name": "Visa",
       "allowsSplit": "disabled"
     },
     {
-      "name": "Botón Bancolombia",
+      "name": "American Express",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Diners",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Discover",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Mastercard Debit",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Cobranded",
+      "allowsSplit": "disabled"
+    },
+    {
+      "name": "Privatelabels",
       "allowsSplit": "disabled"
     }
   ],
